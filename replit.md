@@ -78,7 +78,10 @@ Preferred communication style: Simple, everyday language.
 - **ESBuild**: Fast JavaScript bundling for production
 
 ### Third-Party Integration
-- **Thai Stock 2D API**: External lottery data source (documented in attached assets)
+- **Thai Stock 2D API**: Real-time lottery data source integrated at https://api.thaistock2d.com
+  - Live data endpoint: `/live` - Returns current SET, Value, and 2D results
+  - Historical data: `/2d_result` and `/history` endpoints for past results
+  - Auto-refresh every 60 seconds on frontend with manual refresh capability
 - **Neon Database**: Serverless PostgreSQL provider
 - **Replit**: Development environment integration
 

@@ -1,4 +1,5 @@
 import { Wifi, Battery, Calendar, MoreVertical } from "lucide-react";
+import APIStatusIndicator from "./api-status-indicator";
 
 interface AppHeaderProps {
   currentView: "2D" | "3D";
@@ -39,7 +40,10 @@ export default function AppHeader({ currentView, onViewToggle }: AppHeaderProps)
       <div className="flex items-center justify-between max-w-md mx-auto mt-2">
         <div>
           <h1 className="text-xl font-bold" data-testid="app-title">Myanmar 2D</h1>
-          <span className="text-xs opacity-80">v1.6.8</span>
+          <div className="flex items-center space-x-2">
+            <span className="text-xs opacity-80">v1.6.8</span>
+            <APIStatusIndicator />
+          </div>
         </div>
         
         {/* View Toggle Buttons */}

@@ -5,8 +5,9 @@ interface ResultCardProps {
 }
 
 export default function ResultCard({ result }: ResultCardProps) {
-  const hasTraditionalData = result.set || result.value || result.result2D;
+  const hasTraditionalData = (result.set && result.set !== "--") || (result.value && result.value !== "--") || (result.result2D && result.result2D !== "--");
   const hasModernData = result.modern || result.internet || result.tw;
+  const isLoadingOrPending = result.isLoading || result.result2D === "--";
 
   return (
     <div 
@@ -24,7 +25,7 @@ export default function ResultCard({ result }: ResultCardProps) {
           <div>
             <p className="text-xs opacity-80 mb-1">SET</p>
             <p 
-              className={`font-semibold text-sm ${result.isLoading ? 'text-golden animate-pulse' : ''}`}
+              className={`font-semibold text-sm ${isLoadingOrPending ? 'text-golden animate-pulse' : ''}`}
               data-testid={`text-set-${result.id}`}
             >
               {result.set || "--"}
@@ -33,7 +34,7 @@ export default function ResultCard({ result }: ResultCardProps) {
           <div>
             <p className="text-xs opacity-80 mb-1">Value</p>
             <p 
-              className={`font-semibold text-sm ${result.isLoading ? 'text-golden animate-pulse' : ''}`}
+              className={`font-semibold text-sm ${isLoadingOrPending ? 'text-golden animate-pulse' : ''}`}
               data-testid={`text-value-${result.id}`}
             >
               {result.value || "--"}
@@ -42,7 +43,7 @@ export default function ResultCard({ result }: ResultCardProps) {
           <div>
             <p className="text-xs opacity-80 mb-1">2D</p>
             <p 
-              className={`font-bold text-lg ${result.isLoading ? 'text-golden animate-pulse' : 'text-golden'}`}
+              className={`font-bold text-lg ${isLoadingOrPending ? 'text-golden animate-pulse' : 'text-golden'}`}
               data-testid={`text-2d-${result.id}`}
             >
               {result.result2D || "--"}

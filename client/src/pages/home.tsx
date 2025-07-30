@@ -14,8 +14,9 @@ export default function Home() {
   const [showNotification, setShowNotification] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data: lotteryResults = [], isLoading: resultsLoading } = useQuery<LotteryResult[]>({
+  const { data: lotteryResults = [], isLoading: resultsLoading, error: resultsError } = useQuery<LotteryResult[]>({
     queryKey: ["/api/lottery-results", currentView],
+    refetchInterval: 60000, // Auto-refresh every minute
   });
 
   const { data: settings } = useQuery<AppSettings>({
@@ -26,6 +27,11 @@ export default function Home() {
     mutationFn: () => apiRequest("POST", "/api/lottery-results/refresh"),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/lottery-results"] });
+      setShowNotification(true);
+    },
+    onError: (error) => {
+      console.error("Failed to refresh results:", error);
+      // Show error notification
       setShowNotification(true);
     },
   });
@@ -47,6 +53,14 @@ export default function Home() {
     refreshMutation.mutate();
   };
 
+  // Auto-fetch real data on component mount
+  useEffect(() => {
+    if (!resultsLoading && lotteryResults.length === 0) {
+      // If no data exists, fetch fresh data from API
+      refreshMutation.mutate();
+    }
+  }, [resultsLoading, lotteryResults.length]);
+
   const handleDismissNotification = () => {
     setShowNotification(false);
   };
@@ -57,8 +71,14 @@ export default function Home() {
     return result.resultType === currentView && result.drawDate === today;
   });
 
-  // Get the main result (first completed result)
-  const mainResult = todayResults.find(result => !result.isLoading && result.result2D);
+  // Get the main result (most recent completed result that's not "--")
+  const mainResult = todayResults
+    .filter(result => !result.isLoading && result.result2D && result.result2D !== "--")
+    .sort((a, b) => {
+      const timeA = convertTo24Hour(a.drawTime);
+      const timeB = convertTo24Hour(b.drawTime);
+      return timeB.localeCompare(timeA); // Most recent first
+    })[0];
 
   // Sort results by time for display
   const sortedResults = [...todayResults].sort((a, b) => {
@@ -89,7 +109,7 @@ export default function Home() {
       
       <main className="max-w-md mx-auto px-4 py-6 space-y-6">
         <MainResultDisplay 
-          mainNumber={mainResult?.result2D || "79"}
+          mainNumber={mainResult?.result2D || "--"}
           isLoading={resultsLoading}
         />
 
@@ -116,8 +136,8 @@ export default function Home() {
       <FloatingNotification 
         show={showNotification}
         onDismiss={handleDismissNotification}
-        message="Results Updated"
-        description="Latest lottery numbers are now available"
+        message={refreshMutation.isError ? "Update Failed" : "Results Updated"}
+        description={refreshMutation.isError ? "Could not fetch latest data. Please try again." : "Latest lottery numbers are now available"}
       />
     </div>
   );

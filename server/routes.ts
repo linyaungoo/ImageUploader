@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertLotteryResultSchema, insertAppSettingsSchema } from "@shared/schema";
+import { thaiStockAPI } from "./thaistock-api";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -94,27 +95,90 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Refresh lottery results (simulate new data)
+  // Refresh lottery results (fetch real data from Thai Stock API)
   app.post("/api/lottery-results/refresh", async (req, res) => {
     try {
-      // Simulate updating loading results with actual data
-      const results = await storage.getLotteryResults();
-      const loadingResults = results.filter(r => r.isLoading);
+      const liveData = await thaiStockAPI.getLiveData();
       
-      for (const result of loadingResults) {
-        const randomNumber = Math.floor(Math.random() * 100).toString().padStart(2, '0');
-        await storage.updateLotteryResult(result.id, {
+      if (!liveData) {
+        return res.status(500).json({ message: "Failed to fetch live data from Thai Stock API" });
+      }
+
+      // Convert API data to our format
+      const newResults = thaiStockAPI.convertToLotteryResults(liveData);
+      
+      // Clear existing results for today and add new ones
+      const today = new Date().toISOString().split('T')[0];
+      const existingResults = await storage.getLotteryResults();
+      const todayResults = existingResults.filter(r => r.drawDate === today);
+      
+      // Remove old results for today
+      for (const result of todayResults) {
+        await storage.updateLotteryResult(result.id, { isLoading: true });
+      }
+
+      // Add new results from API
+      for (const result of newResults) {
+        await storage.createLotteryResult({
+          drawTime: result.drawTime,
+          drawDate: result.drawDate,
+          resultType: result.resultType,
+          set: result.set,
+          value: result.value,
+          result2D: result.result2D,
+          modern: result.modern,
+          internet: result.internet,
+          tw: result.tw,
           isLoading: false,
-          result2D: randomNumber,
-          set: "1,456.78",
-          value: "28,765.43",
         });
       }
 
-      const updatedResults = await storage.getLotteryResults();
+      const updatedResults = await storage.getLotteryResultsByDate(today);
       res.json(updatedResults);
     } catch (error) {
+      console.error("Refresh error:", error);
       res.status(500).json({ message: "Failed to refresh results" });
+    }
+  });
+
+  // Get live data from Thai Stock API
+  app.get("/api/thai-stock/live", async (req, res) => {
+    try {
+      const liveData = await thaiStockAPI.getLiveData();
+      if (!liveData) {
+        return res.status(500).json({ message: "Failed to fetch live data" });
+      }
+      res.json(liveData);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch live data" });
+    }
+  });
+
+  // Get 2D results from Thai Stock API
+  app.get("/api/thai-stock/2d-results", async (req, res) => {
+    try {
+      const { date } = req.query;
+      const results = await thaiStockAPI.get2DResults(date as string);
+      if (!results) {
+        return res.status(500).json({ message: "Failed to fetch 2D results" });
+      }
+      res.json(results);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch 2D results" });
+    }
+  });
+
+  // Get history from Thai Stock API  
+  app.get("/api/thai-stock/history", async (req, res) => {
+    try {
+      const { date } = req.query;
+      const history = await thaiStockAPI.getHistory(date as string);
+      if (!history) {
+        return res.status(500).json({ message: "Failed to fetch history" });
+      }
+      res.json(history);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch history" });
     }
   });
 

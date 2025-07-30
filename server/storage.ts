@@ -1,11 +1,8 @@
 import { type LotteryResult, type InsertLotteryResult, type AppSettings, type InsertAppSettings } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { thaiStockAPI } from "./thaistock-api";
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
-  
   // Lottery results methods
   getLotteryResults(): Promise<LotteryResult[]>;
   getLotteryResultsByType(resultType: string): Promise<LotteryResult[]>;
@@ -19,18 +16,16 @@ export interface IStorage {
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<string, User>;
   private lotteryResults: Map<string, LotteryResult>;
   private appSettings: AppSettings | undefined;
 
   constructor() {
-    this.users = new Map();
     this.lotteryResults = new Map();
     this.appSettings = undefined;
     this.initializeData();
   }
 
-  private initializeData() {
+  private async initializeData() {
     const today = new Date().toISOString().split('T')[0];
     
     // Initialize app settings
@@ -41,91 +36,47 @@ export class MemStorage implements IStorage {
       totalDrawsToday: 4,
     };
 
-    // Initialize some lottery results for today
-    const results: LotteryResult[] = [
-      {
-        id: randomUUID(),
-        drawTime: "12:01 PM",
-        drawDate: today,
-        resultType: "2D",
-        set: "1,205.27",
-        value: "23,339.30",
-        result2D: "79",
-        modern: null,
-        internet: null,
-        tw: null,
-        isLoading: false,
-        createdAt: new Date(),
-      },
-      {
-        id: randomUUID(),
-        drawTime: "4:30 PM",
-        drawDate: today,
-        resultType: "2D",
-        set: null,
-        value: null,
-        result2D: null,
-        modern: null,
-        internet: null,
-        tw: null,
-        isLoading: true,
-        createdAt: new Date(),
-      },
-      {
-        id: randomUUID(),
-        drawTime: "9:30 AM",
-        drawDate: today,
-        resultType: "2D",
-        set: null,
-        value: null,
-        result2D: null,
-        modern: "01",
-        internet: "76",
-        tw: "60",
-        isLoading: false,
-        createdAt: new Date(),
-      },
-      {
-        id: randomUUID(),
-        drawTime: "2:00 PM",
-        drawDate: today,
-        resultType: "2D",
-        set: null,
-        value: null,
-        result2D: null,
-        modern: null,
-        internet: null,
-        tw: null,
-        isLoading: true,
-        createdAt: new Date(),
-      },
-    ];
+    // Try to fetch real data from Thai Stock API
+    try {
+      const liveData = await thaiStockAPI.getLiveData();
+      if (liveData) {
+        const realResults = thaiStockAPI.convertToLotteryResults(liveData);
+        realResults.forEach(result => {
+          this.lotteryResults.set(result.id, result);
+        });
+        console.log("Initialized with real Thai Stock 2D data");
+        return;
+      }
+    } catch (error) {
+      console.warn("Failed to fetch initial data from Thai Stock API, using fallback:", error);
+    }
 
-    results.forEach(result => {
+    // Fallback: Initialize with expected draw times (but no data)
+    const drawTimes = ["11:00 AM", "12:01 PM", "3:00 PM", "4:30 PM"];
+    drawTimes.forEach((time, index) => {
+      const result: LotteryResult = {
+        id: randomUUID(),
+        drawTime: time,
+        drawDate: today,
+        resultType: "2D",
+        set: null,
+        value: null,
+        result2D: null,
+        modern: null,
+        internet: null,
+        tw: null,
+        isLoading: true,
+        createdAt: new Date(),
+      };
       this.lotteryResults.set(result.id, result);
     });
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
-  }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
-  }
 
   async getLotteryResults(): Promise<LotteryResult[]> {
     return Array.from(this.lotteryResults.values()).sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      new Date(b.createdAt || new Date()).getTime() - new Date(a.createdAt || new Date()).getTime()
     );
   }
 
@@ -142,8 +93,17 @@ export class MemStorage implements IStorage {
   async createLotteryResult(insertResult: InsertLotteryResult): Promise<LotteryResult> {
     const id = randomUUID();
     const result: LotteryResult = { 
-      ...insertResult, 
       id,
+      drawTime: insertResult.drawTime,
+      drawDate: insertResult.drawDate,
+      resultType: insertResult.resultType,
+      set: insertResult.set || null,
+      value: insertResult.value || null,
+      result2D: insertResult.result2D || null,
+      modern: insertResult.modern || null,
+      internet: insertResult.internet || null,
+      tw: insertResult.tw || null,
+      isLoading: insertResult.isLoading || false,
       createdAt: new Date(),
     };
     this.lotteryResults.set(id, result);
