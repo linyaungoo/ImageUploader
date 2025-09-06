@@ -100,8 +100,8 @@ export default function History() {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-coral mx-auto"></div>
               <p className="text-gray-medium mt-2">Loading history...</p>
             </div>
-          ) : historyResults.length > 0 ? (
-            historyResults.map((dayResult, dayIndex) => (
+          ) : filteredResults.length > 0 ? (
+            filteredResults.map((dayResult, dayIndex) => (
               <div key={dayIndex} className="space-y-3">
                 <div className="flex items-center justify-between bg-white rounded-lg p-3 shadow-sm">
                   <h4 className="font-semibold text-gray-dark flex items-center">
@@ -170,19 +170,19 @@ export default function History() {
         </div>
 
         {/* Summary Stats */}
-        {historyResults.length > 0 && (
+        {filteredResults.length > 0 && (
           <div className="bg-white rounded-xl p-4 shadow-lg">
             <h4 className="font-semibold text-gray-dark mb-3">Daily Summary</h4>
             <div className="grid grid-cols-2 gap-4 text-center">
               <div className="bg-gray-light rounded-lg p-3">
                 <p className="text-2xl font-bold text-success">
-                  {historyResults.reduce((total, day) => total + (day.child?.length || 0), 0)}
+                  {filteredResults.reduce((total, day) => total + (day.child?.length || 0), 0)}
                 </p>
                 <p className="text-xs text-gray-medium">Total Draws</p>
               </div>
               <div className="bg-gray-light rounded-lg p-3">
                 <p className="text-2xl font-bold text-coral">
-                  {historyResults[0]?.child?.[historyResults[0].child.length - 1]?.twod || "--"}
+                  {filteredResults[0]?.child?.[filteredResults[0].child.length - 1]?.twod || "--"}
                 </p>
                 <p className="text-xs text-gray-medium">Latest Result</p>
               </div>

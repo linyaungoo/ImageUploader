@@ -65,10 +65,16 @@ export default function Home() {
     setShowNotification(false);
   };
 
-  // Filter results by current view and today's date
+  // Filter results by current view, today's date, and specific times (12:01 PM and 4:30 PM)
   const todayResults = lotteryResults.filter(result => {
     const today = new Date().toISOString().split('T')[0];
-    return result.resultType === currentView && result.drawDate === today;
+    const isToday = result.resultType === currentView && result.drawDate === today;
+    
+    // Only show 12:01 PM and 4:30 PM results
+    const allowedTimes = ['12:01 PM', '4:30 PM'];
+    const isAllowedTime = allowedTimes.includes(result.drawTime);
+    
+    return isToday && isAllowedTime;
   });
 
   // Get the main result (most recent completed result that's not "--")
