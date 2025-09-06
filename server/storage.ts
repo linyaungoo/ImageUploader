@@ -9,6 +9,7 @@ export interface IStorage {
   getLotteryResultsByDate(date: string): Promise<LotteryResult[]>;
   createLotteryResult(result: InsertLotteryResult): Promise<LotteryResult>;
   updateLotteryResult(id: string, updates: Partial<LotteryResult>): Promise<LotteryResult | undefined>;
+  deleteLotteryResult(id: string): Promise<boolean>;
   
   // Historical data caching methods
   cacheHistoricalData(date: string, data: any): Promise<void>;
@@ -123,6 +124,10 @@ export class MemStorage implements IStorage {
     const updated = { ...existing, ...updates };
     this.lotteryResults.set(id, updated);
     return updated;
+  }
+
+  async deleteLotteryResult(id: string): Promise<boolean> {
+    return this.lotteryResults.delete(id);
   }
 
   async getAppSettings(): Promise<AppSettings | undefined> {

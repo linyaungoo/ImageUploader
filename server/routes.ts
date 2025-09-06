@@ -112,9 +112,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const existingResults = await storage.getLotteryResults();
       const todayResults = existingResults.filter(r => r.drawDate === today);
       
-      // Remove old results for today
+      // Remove old results for today completely
       for (const result of todayResults) {
-        await storage.updateLotteryResult(result.id, { isLoading: true });
+        await storage.deleteLotteryResult(result.id);
       }
 
       // Add new results from API
