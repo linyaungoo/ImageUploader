@@ -131,8 +131,9 @@ export default function Home() {
         <ActionButtons />
 
         <QuickStats 
-          totalDraws={settings?.totalDrawsToday || 0}
-          lastUpdateTime={mainResult?.drawTime || "12:01"}
+          firstDraw={sortedResults[0]?.result2D || "--"}
+          secondDraw={sortedResults[1]?.result2D || "--"}
+          lastFetchTime={new Date().toLocaleString()}
         />
       </main>
 

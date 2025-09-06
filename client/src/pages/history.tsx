@@ -178,16 +178,21 @@ export default function History() {
             <div className="grid grid-cols-2 gap-4 text-center">
               <div className="bg-gray-light rounded-lg p-3">
                 <p className="text-2xl font-bold text-success">
-                  {filteredResults.reduce((total, day) => total + (day.child?.length || 0), 0)}
+                  {filteredResults[0]?.child?.[0]?.twod || "--"}
                 </p>
-                <p className="text-xs text-gray-medium">Total Draws</p>
+                <p className="text-xs text-gray-medium">1st Draw</p>
               </div>
               <div className="bg-gray-light rounded-lg p-3">
                 <p className="text-2xl font-bold text-coral">
-                  {filteredResults[0]?.child?.[filteredResults[0].child.length - 1]?.twod || "--"}
+                  {filteredResults[0]?.child?.[1]?.twod || "--"}
                 </p>
-                <p className="text-xs text-gray-medium">Latest Result</p>
+                <p className="text-xs text-gray-medium">2nd Draw</p>
               </div>
+            </div>
+            <div className="mt-3 text-center">
+              <p className="text-xs text-gray-medium">
+                Last fetch: {new Date().toLocaleString()}
+              </p>
             </div>
           </div>
         )}
