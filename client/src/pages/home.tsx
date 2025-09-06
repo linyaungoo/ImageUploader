@@ -128,6 +128,7 @@ export default function Home() {
           ))}
         </div>
 
+        <ActionButtons />
 
         <QuickStats 
           totalDraws={settings?.totalDrawsToday || 0}
