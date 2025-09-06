@@ -6,7 +6,9 @@ import type { LotteryResult } from "@shared/schema";
 
 export default function History() {
   const [selectedDate, setSelectedDate] = useState<string>(() => {
-    return new Date().toISOString().split('T')[0];
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    return yesterday.toISOString().split('T')[0];
   });
 
   const { data: historyResults = [], isLoading } = useQuery<any[]>({

@@ -128,10 +128,6 @@ export default function Home() {
           ))}
         </div>
 
-        <ActionButtons 
-          onRefresh={handleRefresh}
-          isRefreshing={refreshMutation.isPending}
-        />
 
         <QuickStats 
           totalDraws={settings?.totalDrawsToday || 0}
