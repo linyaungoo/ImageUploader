@@ -10,6 +10,10 @@ export interface IStorage {
   createLotteryResult(result: InsertLotteryResult): Promise<LotteryResult>;
   updateLotteryResult(id: string, updates: Partial<LotteryResult>): Promise<LotteryResult | undefined>;
   
+  // Historical data caching methods
+  cacheHistoricalData(date: string, data: any): Promise<void>;
+  getCachedHistoricalData(date: string): Promise<any | undefined>;
+  
   // App settings methods
   getAppSettings(): Promise<AppSettings | undefined>;
   updateAppSettings(updates: Partial<AppSettings>): Promise<AppSettings>;
@@ -17,10 +21,12 @@ export interface IStorage {
 
 export class MemStorage implements IStorage {
   private lotteryResults: Map<string, LotteryResult>;
+  private historicalDataCache: Map<string, any>;
   private appSettings: AppSettings | undefined;
 
   constructor() {
     this.lotteryResults = new Map();
+    this.historicalDataCache = new Map();
     this.appSettings = undefined;
     this.initializeData();
   }
@@ -121,6 +127,14 @@ export class MemStorage implements IStorage {
 
   async getAppSettings(): Promise<AppSettings | undefined> {
     return this.appSettings;
+  }
+
+  async cacheHistoricalData(date: string, data: any): Promise<void> {
+    this.historicalDataCache.set(date, data);
+  }
+
+  async getCachedHistoricalData(date: string): Promise<any | undefined> {
+    return this.historicalDataCache.get(date);
   }
 
   async updateAppSettings(updates: Partial<AppSettings>): Promise<AppSettings> {

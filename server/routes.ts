@@ -154,14 +154,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get 2D results from Thai Stock API
+  // Get 2D results from Thai Stock API with caching
   app.get("/api/thai-stock/2d-results", async (req, res) => {
     try {
       const { date } = req.query;
-      const results = await thaiStockAPI.get2DResults(date as string);
+      const dateStr = date as string;
+      
+      // Check cache first
+      if (dateStr) {
+        const cachedData = await storage.getCachedHistoricalData(dateStr);
+        if (cachedData) {
+          return res.json(cachedData);
+        }
+      }
+      
+      const results = await thaiStockAPI.get2DResults(dateStr);
       if (!results) {
         return res.status(500).json({ message: "Failed to fetch 2D results" });
       }
+      
+      // Cache the results
+      if (dateStr) {
+        await storage.cacheHistoricalData(dateStr, results);
+      }
+      
       res.json(results);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch 2D results" });

@@ -45,15 +45,22 @@ export class ThaiStockAPIService {
 
   async get2DResults(date?: string): Promise<ThaiStockDateResult[] | null> {
     try {
-      const url = date 
-        ? `${this.baseURL}/2d_result?date=${date}`
-        : `${this.baseURL}/2d_result`;
+      // For now, always use the last 10 days endpoint since specific date queries seem to have issues
+      // The API returns the last 10 days of data, which we can filter on the client side
+      const url = `${this.baseURL}/2d_result`;
       
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return await response.json();
+      const data = await response.json();
+      
+      // If a specific date is requested, filter the results
+      if (date && Array.isArray(data)) {
+        return data.filter((dayData: any) => dayData.date === date);
+      }
+      
+      return data;
     } catch (error) {
       console.error("Failed to fetch 2D results:", error);
       return null;
