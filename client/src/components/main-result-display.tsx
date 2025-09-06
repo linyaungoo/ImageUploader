@@ -30,7 +30,7 @@ export default function MainResultDisplay({ mainNumber, isLoading }: MainResultD
             className={isLoading ? "animate-pulse-slow" : ""}
             data-testid="text-update-status"
           >
-            {isLoading ? "🔄 Updating..." : "✨ Live Data"}
+            {isLoading ? "🔄 Updating..." : "Live Data"}
           </span>
         </div>
       </div>

@@ -1,0 +1,303 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Myanmar 2D - Lottery Results</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'golden': '#FFD700',
+                        'coral': '#FF5722',
+                        'success': '#4CAF50'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif']
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-gentle': 'bounce 1s infinite'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-inter">
+    <!-- @COMPONENT: AppHeader -->
+    <header class="bg-golden text-gray-800 px-4 py-3 shadow-lg">
+        <div class="flex items-center justify-between max-w-md mx-auto">
+            <!-- Status Bar Simulation -->
+            <div class="flex items-center text-sm font-medium">
+                <span>11:52</span>
+                <span class="ml-2">Wed, Jul 30</span>
+                <i class="fas fa-calendar ml-1 text-xs"></i>
+            </div>
+            
+            <!-- Signal and Battery -->
+            <div class="flex items-center text-sm">
+                <i class="fas fa-wifi mr-2"></i>
+                <i class="fas fa-battery-three-quarters mr-1"></i>
+                <span>47%</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center justify-between max-w-md mx-auto mt-2">
+            <div>
+                <h1 class="text-xl font-bold">Myanmar 2D</h1>
+                <span class="text-xs opacity-80">v1.6.8</span>
+            </div>
+            
+            <!-- View Toggle Buttons -->
+            <div class="flex bg-white bg-opacity-20 rounded-lg p-1">
+                <button data-event="click:toggle2D" class="bg-white text-coral px-3 py-1 rounded-md text-sm font-semibold shadow-sm transition-all duration-200 hover:bg-opacity-90">
+                    2D
+                </button>
+                <button data-event="click:toggle3D" class="text-white px-3 py-1 rounded-md text-sm font-semibold transition-all duration-200 hover:bg-white hover:bg-opacity-20">
+                    3D
+                </button>
+            </div>
+            
+            <!-- Menu Button -->
+            <button data-event="click:openMenu" class="text-gray-800 p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-all duration-200">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+        </div>
+    </header>
+    <!-- @END_COMPONENT: AppHeader -->
+
+    <main class="max-w-md mx-auto px-4 py-6 space-y-6">
+        <!-- @COMPONENT: MainResultDisplay -->
+        <div class="text-center space-y-4">
+            <!-- Main Result Number -->
+            <div class="relative">
+                <h2 class="text-8xl font-bold text-success mb-2" data-bind="currentResult.number">79</h2>
+                <!-- Loading Indicator -->
+                <div class="flex items-center justify-center text-gray-600 text-sm">
+                    <i class="fas fa-check-circle text-success mr-2"></i>
+                    <span data-bind="updateStatus" class="animate-pulse-slow">Updated: loading...</span>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: MainResultDisplay -->
+
+        <!-- @COMPONENT: ResultCards -->
+        <div class="space-y-4" data-mock="true">
+            <!-- @MAP: resultCards.map(card => ( -->
+            
+            <!-- 12:01 PM Result Card -->
+            <div class="bg-coral rounded-xl p-4 text-white shadow-lg transform transition-all duration-200 hover:scale-105 hover:shadow-xl">
+                <div class="text-center mb-3">
+                    <h3 class="text-lg font-semibold" data-bind="card.time">12:01 PM</h3>
+                </div>
+                <div class="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                        <p class="text-xs opacity-80 mb-1">SET</p>
+                        <p class="font-semibold text-sm" data-bind="card.set">1,205.27</p>
+                    </div>
+                    <div>
+                        <p class="text-xs opacity-80 mb-1">Value</p>
+                        <p class="font-semibold text-sm" data-bind="card.value">23,339.30</p>
+                    </div>
+                    <div>
+                        <p class="text-xs opacity-80 mb-1">2D</p>
+                        <p class="font-bold text-lg text-golden" data-bind="card.result">79</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4:30 PM Result Card (Loading) -->
+            <div class="bg-coral rounded-xl p-4 text-white shadow-lg">
+                <div class="text-center mb-3">
+                    <h3 class="text-lg font-semibold" data-bind="card.time">4:30 PM</h3>
+                </div>
+                <div class="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                        <p class="text-xs opacity-80 mb-1">SET</p>
+                        <p class="font-semibold text-sm text-golden animate-pulse" data-bind="card.set">--</p>
+                    </div>
+                    <div>
+                        <p class="text-xs opacity-80 mb-1">Value</p>
+                        <p class="font-semibold text-sm text-golden animate-pulse" data-bind="card.value">--</p>
+                    </div>
+                    <div>
+                        <p class="text-xs opacity-80 mb-1">2D</p>
+                        <p class="font-bold text-lg text-golden animate-pulse" data-bind="card.result">--</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9:30 AM Result Card (Alternative Layout) -->
+            <div class="bg-coral rounded-xl p-4 text-white shadow-lg">
+                <div class="text-center mb-3">
+                    <h3 class="text-lg font-semibold" data-bind="card.time">9:30 AM</h3>
+                </div>
+                <div class="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                        <p class="text-xs opacity-80 mb-1">Modern</p>
+                        <p class="font-bold text-lg text-golden" data-bind="card.modern">01</p>
+                    </div>
+                    <div>
+                        <p class="text-xs opacity-80 mb-1">Internet</p>
+                        <p class="font-bold text-lg text-golden" data-bind="card.internet">76</p>
+                    </div>
+                    <div>
+                        <p class="text-xs opacity-80 mb-1">TW</p>
+                        <p class="font-bold text-lg text-golden" data-bind="card.tw">60</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2:00 PM Result Card (Partial Loading) -->
+            <div class="bg-coral rounded-xl p-4 text-white shadow-lg">
+                <div class="text-center mb-3">
+                    <h3 class="text-lg font-semibold" data-bind="card.time">2:00 PM</h3>
+                </div>
+                <div class="grid grid-cols-2 gap-6 text-center">
+                    <div>
+                        <p class="text-xs opacity-80 mb-1">Modern</p>
+                        <p class="font-semibold text-sm text-golden animate-pulse" data-bind="card.modern">--</p>
+                    </div>
+                    <div>
+                        <p class="text-xs opacity-80 mb-1">Internet</p>
+                        <p class="font-semibold text-sm text-golden animate-pulse" data-bind="card.internet">--</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- @END_MAP )) -->
+        </div>
+        <!-- @END_COMPONENT: ResultCards -->
+
+        <!-- @COMPONENT: ActionButtons -->
+        <div class="flex space-x-4 pt-4">
+            <button data-event="click:refreshResults" class="flex-1 bg-success text-white py-3 px-6 rounded-xl font-semibold shadow-lg hover:bg-green-600 transform transition-all duration-200 hover:scale-105 active:scale-95">
+                <i class="fas fa-sync-alt mr-2"></i>
+                Refresh
+            </button>
+            <button data-event="click:viewHistory" class="flex-1 bg-white text-gray-700 py-3 px-6 rounded-xl font-semibold shadow-lg border border-gray-200 hover:bg-gray-50 transform transition-all duration-200 hover:scale-105 active:scale-95">
+                <i class="fas fa-history mr-2"></i>
+                History
+            </button>
+        </div>
+        <!-- @END_COMPONENT: ActionButtons -->
+
+        <!-- @COMPONENT: QuickStats -->
+        <div class="bg-white rounded-xl p-4 shadow-lg border border-gray-200" data-mock="true">
+            <h4 class="font-semibold text-gray-800 mb-3">Today's Summary</h4>
+            <div class="grid grid-cols-2 gap-4 text-center">
+                <div class="bg-gray-50 rounded-lg p-3">
+                    <p class="text-2xl font-bold text-success" data-bind="stats.totalDraws">4</p>
+                    <p class="text-xs text-gray-600">Total Draws</p>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-3">
+                    <p class="text-2xl font-bold text-coral" data-bind="stats.lastUpdate">12:01</p>
+                    <p class="text-xs text-gray-600">Last Update</p>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: QuickStats -->
+    </main>
+
+    <!-- @COMPONENT: FloatingNotification -->
+    <div id="notification" class="fixed bottom-4 left-4 right-4 max-w-md mx-auto bg-white rounded-lg shadow-xl border-l-4 border-success p-4 transform translate-y-full transition-transform duration-300 ease-out" data-mock="true">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle text-success mr-3"></i>
+            <div class="flex-1">
+                <p class="font-semibold text-gray-800">Results Updated</p>
+                <p class="text-sm text-gray-600">Latest lottery numbers are now available</p>
+            </div>
+            <button data-event="click:dismissNotification" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: FloatingNotification -->
+
+    <script>
+        // TODO: Implement business logic, API calls, or state management
+        (function() {
+            // IIFE to scope variables and avoid global namespace pollution
+            
+            // Mock data for demonstration
+            const mockData = {
+                currentResult: { number: "79" },
+                updateStatus: "Updated: loading...",
+                resultCards: [
+                    { time: "12:01 PM", set: "1,205.27", value: "23,339.30", result: "79" },
+                    { time: "4:30 PM", set: "--", value: "--", result: "--" },
+                    { time: "9:30 AM", modern: "01", internet: "76", tw: "60" },
+                    { time: "2:00 PM", modern: "--", internet: "--" }
+                ],
+                stats: { totalDraws: 4, lastUpdate: "12:01" }
+            };
+
+            // Simple toggle functionality for demonstration
+            function initializeToggles() {
+                const toggle2D = document.querySelector('[data-event="click:toggle2D"]');
+                const toggle3D = document.querySelector('[data-event="click:toggle3D"]');
+                
+                if (toggle2D && toggle3D) {
+                    toggle2D.addEventListener('click', function() {
+                        toggle2D.classList.add('bg-white', 'text-coral', 'shadow-sm');
+                        toggle2D.classList.remove('text-white');
+                        toggle3D.classList.remove('bg-white', 'text-coral', 'shadow-sm');
+                        toggle3D.classList.add('text-white');
+                    });
+                    
+                    toggle3D.addEventListener('click', function() {
+                        toggle3D.classList.add('bg-white', 'text-coral', 'shadow-sm');
+                        toggle3D.classList.remove('text-white');
+                        toggle2D.classList.remove('bg-white', 'text-coral', 'shadow-sm');
+                        toggle2D.classList.add('text-white');
+                    });
+                }
+            }
+
+            // Simulate loading state updates
+            function simulateLoadingUpdates() {
+                const statusElement = document.querySelector('[data-bind="updateStatus"]');
+                if (statusElement) {
+                    setTimeout(() => {
+                        statusElement.textContent = "Updated: 2 minutes ago";
+                        statusElement.classList.remove('animate-pulse-slow');
+                    }, 3000);
+                }
+            }
+
+            // Show notification after page load
+            function showNotification() {
+                const notification = document.getElementById('notification');
+                if (notification) {
+                    setTimeout(() => {
+                        notification.classList.remove('translate-y-full');
+                        
+                        // Auto-hide after 5 seconds
+                        setTimeout(() => {
+                            notification.classList.add('translate-y-full');
+                        }, 5000);
+                    }, 2000);
+                }
+            }
+
+            // Initialize all interactive features
+            function initialize() {
+                initializeToggles();
+                simulateLoadingUpdates();
+                showNotification();
+            }
+
+            // Wait for DOM to be ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initialize);
+            } else {
+                initialize();
+            }
+        })();
+    </script>
+</body>
+</html>

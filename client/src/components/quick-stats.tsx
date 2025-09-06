@@ -4,11 +4,18 @@ interface QuickStatsProps {
   lastFetchTime: string;
 }
 
-export default function QuickStats({ firstDraw, secondDraw, lastFetchTime }: QuickStatsProps) {
+export default function QuickStats({
+  firstDraw,
+  secondDraw,
+  lastFetchTime,
+}: QuickStatsProps) {
   return (
     <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 shadow-lg border border-blue-100">
-      <h4 className="font-bold text-gray-800 mb-4 text-center text-lg" data-testid="text-stats-title">
-        Today's Summary
+      <h4
+        className="font-bold text-gray-800 mb-4 text-center text-lg"
+        data-testid="text-stats-title"
+      >
+        Summary
       </h4>
       <div className="grid grid-cols-2 gap-6 text-center">
         <div className="bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl p-4 text-white shadow-md hover:shadow-lg transform transition-all duration-200 hover:scale-105">
