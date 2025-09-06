@@ -11,7 +11,7 @@ export default function ResultCard({ result }: ResultCardProps) {
 
   return (
     <div 
-      className="bg-coral rounded-xl p-4 text-white shadow-lg transform transition-all duration-200 hover:scale-105 hover:shadow-xl"
+      className="bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 rounded-2xl p-6 text-white shadow-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-3xl border border-pink-200 backdrop-blur-sm"
       data-testid={`card-result-${result.id}`}
     >
       <div className="text-center mb-3">

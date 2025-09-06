@@ -54,36 +54,36 @@ export default function History() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-light">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
       {/* Header */}
-      <header className="bg-golden text-gray-dark px-4 py-3 shadow-lg">
+      <header className="bg-gradient-to-r from-purple-600 via-pink-500 to-purple-700 text-white px-4 py-4 shadow-xl border-b-4 border-purple-300">
         <div className="flex items-center justify-between max-w-md mx-auto">
           <Link href="/">
             <button 
-              className="flex items-center text-gray-dark hover:bg-white hover:bg-opacity-20 rounded-full p-2 transition-all duration-200"
+              className="flex items-center text-white hover:bg-white hover:bg-opacity-20 rounded-full p-3 transition-all duration-200 transform hover:scale-110"
               data-testid="button-back"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
           </Link>
-          <h1 className="text-xl font-bold" data-testid="text-history-title">
+          <h1 className="text-2xl font-bold tracking-wide drop-shadow-lg" data-testid="text-history-title">
             Results History
           </h1>
-          <div className="w-9 h-9"></div> {/* Spacer for alignment */}
+          <div className="w-11 h-11"></div> {/* Spacer for alignment */}
         </div>
       </header>
 
       <main className="max-w-md mx-auto px-4 py-6 space-y-6">
         {/* Date Selector */}
-        <div className="bg-white rounded-xl p-4 shadow-lg">
-          <div className="flex items-center mb-3">
-            <Calendar className="w-4 h-4 text-coral mr-2" />
-            <h3 className="font-semibold text-gray-dark">Select Date</h3>
+        <div className="bg-gradient-to-r from-white via-purple-50 to-pink-50 rounded-2xl p-6 shadow-2xl border-2 border-purple-200">
+          <div className="flex items-center mb-4">
+            <Calendar className="w-5 h-5 text-purple-600 mr-3" />
+            <h3 className="font-bold text-purple-800 text-lg">Select Date</h3>
           </div>
           <select 
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral focus:border-transparent"
+            className="w-full p-4 border-2 border-purple-300 rounded-xl focus:ring-4 focus:ring-purple-300 focus:border-purple-500 bg-white font-semibold text-gray-800 text-lg"
             data-testid="select-history-date"
           >
             {getDateOptions().map(date => (

@@ -8,24 +8,24 @@ interface AppHeaderProps {
 
 export default function AppHeader({ currentView, onViewToggle }: AppHeaderProps) {
   return (
-    <header className="bg-golden text-gray-dark px-4 py-3 shadow-lg">
+    <header className="bg-gradient-to-r from-purple-600 via-pink-500 to-purple-700 text-white px-4 py-4 shadow-xl border-b-4 border-purple-300">
       <div className="flex items-center justify-between max-w-md mx-auto">
         <div>
-          <h1 className="text-xl font-bold" data-testid="app-title">Myanmar 2D</h1>
+          <h1 className="text-2xl font-bold tracking-wide drop-shadow-lg" data-testid="app-title">Myanmar 2D</h1>
           <div className="flex items-center space-x-2">
-            <span className="text-xs opacity-80">v1.6.8</span>
+            <span className="text-xs opacity-90 font-medium">v1.6.8</span>
             <APIStatusIndicator />
           </div>
         </div>
         
         {/* View Toggle Buttons */}
-        <div className="flex bg-white bg-opacity-20 rounded-lg p-1">
+        <div className="flex bg-black bg-opacity-20 rounded-xl p-1 backdrop-blur-sm border border-white border-opacity-20">
           <button 
             onClick={() => onViewToggle("2D")}
-            className={`px-3 py-1 rounded-md text-sm font-semibold transition-all duration-200 ${
+            className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 transform ${
               currentView === "2D" 
-                ? "bg-white text-coral shadow-sm" 
-                : "text-white hover:bg-white hover:bg-opacity-20"
+                ? "bg-white text-purple-700 shadow-lg scale-105" 
+                : "text-white hover:bg-white hover:bg-opacity-20 hover:scale-105"
             }`}
             data-testid="button-toggle-2d"
           >
@@ -33,10 +33,10 @@ export default function AppHeader({ currentView, onViewToggle }: AppHeaderProps)
           </button>
           <button 
             onClick={() => onViewToggle("3D")}
-            className={`px-3 py-1 rounded-md text-sm font-semibold transition-all duration-200 ${
+            className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 transform ${
               currentView === "3D" 
-                ? "bg-white text-coral shadow-sm" 
-                : "text-white hover:bg-white hover:bg-opacity-20"
+                ? "bg-white text-purple-700 shadow-lg scale-105" 
+                : "text-white hover:bg-white hover:bg-opacity-20 hover:scale-105"
             }`}
             data-testid="button-toggle-3d"
           >
@@ -46,10 +46,10 @@ export default function AppHeader({ currentView, onViewToggle }: AppHeaderProps)
         
         {/* Menu Button */}
         <button 
-          className="text-gray-dark p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-all duration-200"
+          className="text-white p-3 hover:bg-white hover:bg-opacity-20 rounded-full transition-all duration-200 transform hover:scale-110"
           data-testid="button-menu"
         >
-          <MoreVertical className="w-4 h-4" />
+          <MoreVertical className="w-5 h-5" />
         </button>
       </div>
     </header>
